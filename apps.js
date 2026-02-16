@@ -4,6 +4,7 @@ const nextBtn = document.getElementById("nextBtn");
 const stepHint = document.getElementById("stepHint");
 const roomTotalEl = document.getElementById("roomTotal");
 const overallTotalEl = document.getElementById("overallTotal");
+const totalsBar = document.getElementById("totalsBar");
 
 const money = (n) => {
   const v = Number(n || 0);
@@ -27,13 +28,15 @@ const steps = [
 
 function ensureRoomSelections(room) {
   if (!room.selections) room.selections = {};
+  if (!state.data) return;
+
   for (const g of state.data.groups) {
     if (!room.selections[g.key]) room.selections[g.key] = [];
   }
 }
 
 function calcRoomTotal(room) {
-  if (!state.data) return 0;
+  if (!state.data || !room) return 0;
   ensureRoomSelections(room);
 
   let total = 0;
@@ -48,6 +51,7 @@ function calcRoomTotal(room) {
 }
 
 function calcOverallTotal() {
+  if (!state.data) return 0;
   return state.rooms.reduce((sum, r) => sum + calcRoomTotal(r), 0);
 }
 
@@ -61,8 +65,15 @@ function updateTotalsUI() {
 function setNavUI() {
   stepHint.textContent = `${steps[state.step]} (${state.step + 1} of ${steps.length})`;
 
-  backBtn.disabled = state.step === 0;
+  // Back button hidden until they begin (welcome screen)
+  if (state.step === 0) backBtn.classList.add("hidden");
+  else backBtn.classList.remove("hidden");
 
+  // Totals hidden until room options and summary
+  if (state.step < 3) totalsBar.classList.add("hidden");
+  else totalsBar.classList.remove("hidden");
+
+  // Next button validation
   if (state.step === 1) {
     nextBtn.disabled = state.rooms.length === 0;
   } else if (state.step === 3) {
@@ -121,7 +132,7 @@ function renderWelcome() {
   contentEl.innerHTML = `
     <h1 class="hTitle">Welcome</h1>
     <p class="hSub">
-      Welcome to our budget calculator. First we’ll build the rooms that you want to include in the budget.
+      Welcome to our budget calculator, first we’ll build the rooms that you want to include in the budget.
     </p>
     <div class="panel">
       <p class="hSub" style="margin:0 auto;">
@@ -167,9 +178,6 @@ function renderRooms() {
       <div class="roomItem">
         <div>
           <div class="roomName">${escapeHtml(r.name)}</div>
-          <div style="color:rgba(255,255,255,0.65); font-size:13px; margin-top:4px;">
-            Current estimate ${money(calcRoomTotal(r))}
-          </div>
         </div>
         <button class="smallBtn" type="button" data-remove="${idx}">Remove</button>
       </div>
@@ -179,6 +187,7 @@ function renderRooms() {
       btn.addEventListener("click", () => {
         const i = Number(btn.getAttribute("data-remove"));
         state.rooms.splice(i, 1);
+        if (state.currentRoomIndex >= state.rooms.length) state.currentRoomIndex = Math.max(0, state.rooms.length - 1);
         repaintList();
         updateTotalsUI();
         setNavUI();
@@ -224,6 +233,14 @@ function renderIntro() {
 }
 
 function renderRoomOptions() {
+  if (!state.data) {
+    contentEl.innerHTML = `
+      <h1 class="hTitle">Loading</h1>
+      <p class="hSub">Preparing options data</p>
+    `;
+    return;
+  }
+
   const room = state.rooms[state.currentRoomIndex];
   ensureRoomSelections(room);
 
@@ -232,6 +249,7 @@ function renderRoomOptions() {
 
   const groupsHtml = state.data.groups.map(g => {
     const hint = g.selectionType === "single" ? "Choose one option" : "Choose any that apply";
+
     const options = g.options.map(opt => {
       const checked = (room.selections[g.key] || []).includes(opt.id) ? "checked" : "";
       return `
@@ -360,19 +378,39 @@ function renderSummary() {
 }
 
 function render() {
-  setNavUI();
+  // Welcome, Rooms, How it works always render immediately
+  if (state.step === 0) {
+    renderWelcome();
+    updateTotalsUI();
+    setNavUI();
+    return;
+  }
 
+  if (state.step === 1) {
+    renderRooms();
+    updateTotalsUI();
+    setNavUI();
+    return;
+  }
+
+  if (state.step === 2) {
+    renderIntro();
+    updateTotalsUI();
+    setNavUI();
+    return;
+  }
+
+  // From step 3 onward, options data is required
   if (!state.data) {
     contentEl.innerHTML = `
       <h1 class="hTitle">Loading</h1>
       <p class="hSub">Preparing options data</p>
     `;
+    updateTotalsUI();
+    setNavUI();
     return;
   }
 
-  if (state.step === 0) renderWelcome();
-  if (state.step === 1) renderRooms();
-  if (state.step === 2) renderIntro();
   if (state.step === 3) renderRoomOptions();
   if (state.step === 4) renderSummary();
 
@@ -440,18 +478,29 @@ async function loadData() {
   const res = await fetch("options.json", { cache: "no-store" });
   if (!res.ok) throw new Error("Could not load options.json");
   state.data = await res.json();
+
+  // Ensure selections map exists for all rooms and groups once data loads
+  for (const r of state.rooms) ensureRoomSelections(r);
 }
 
 backBtn.addEventListener("click", back);
 nextBtn.addEventListener("click", next);
 
+// Render immediately so Welcome text always appears
+render();
+
+// Load options data (needed from step 3 onward)
 loadData()
-  .then(() => render())
+  .then(() => {
+    if (state.step >= 3) render();
+  })
   .catch(() => {
-    contentEl.innerHTML = `
-      <h1 class="hTitle">Error</h1>
-      <p class="hSub">
-        Could not load options.json. Make sure it sits next to index.html and app.js in the same folder.
-      </p>
-    `;
+    if (state.step >= 3) {
+      contentEl.innerHTML = `
+        <h1 class="hTitle">Error</h1>
+        <p class="hSub">
+          Could not load options.json. Make sure it sits next to index.html and app.js in the same folder.
+        </p>
+      `;
+    }
   });
