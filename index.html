@@ -16,19 +16,17 @@
     <main class="shell">
       <section class="card" id="app" aria-live="polite">
 
-        <!-- Top bar -->
         <header class="topbar">
           <div class="brand">
             <!-- Replace with your own white logo file if preferred -->
             <!-- <img src="sona-logo-white.svg" alt="SONA" class="logo" /> -->
 
-            <!-- Simple inline logo placeholder -->
             <div class="logoMark" aria-label="SONA logo">
               <span>SONA</span>
             </div>
           </div>
 
-          <div class="totals">
+          <div class="totals" id="totalsBar">
             <div class="pill">
               <div class="pillLabel">Room total</div>
               <div class="pillValue" id="roomTotal">£0</div>
@@ -40,10 +38,8 @@
           </div>
         </header>
 
-        <!-- Content -->
         <div class="content" id="content"></div>
 
-        <!-- Navigation -->
         <footer class="nav">
           <button class="btn ghost" id="backBtn" type="button">Back</button>
           <div class="steps" id="stepHint"></div>
