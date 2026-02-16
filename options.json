@@ -1,0 +1,80 @@
+{
+  "groups": [
+    {
+      "key": "lightingControl",
+      "title": "Lighting Control",
+      "selectionType": "single",
+      "options": [
+        { "id": "lc_none", "label": "None", "price": 0, "tag": "No control" },
+        { "id": "lc_basic", "label": "Basic scene control", "price": 1250, "tag": "Entry" },
+        { "id": "lc_keypads", "label": "Keypads and scenes", "price": 3250, "tag": "Most popular" },
+        { "id": "lc_full", "label": "Fully integrated lighting control", "price": 6500, "tag": "Premium" }
+      ]
+    },
+    {
+      "key": "lightingFixtures",
+      "title": "Lighting Fixtures",
+      "selectionType": "single",
+      "options": [
+        { "id": "lf_none", "label": "Client supplied fixtures", "price": 0, "tag": "Supply only excluded" },
+        { "id": "lf_allowance_small", "label": "Fixture allowance small", "price": 2000, "tag": "Allowance" },
+        { "id": "lf_allowance_medium", "label": "Fixture allowance medium", "price": 4500, "tag": "Allowance" },
+        { "id": "lf_allowance_large", "label": "Fixture allowance large", "price": 8500, "tag": "Allowance" }
+      ]
+    },
+    {
+      "key": "shading",
+      "title": "Shading",
+      "selectionType": "single",
+      "options": [
+        { "id": "sh_none", "label": "None", "price": 0, "tag": "No shading" },
+        { "id": "sh_roller", "label": "Motorised roller blind", "price": 1800, "tag": "Per opening" },
+        { "id": "sh_roman", "label": "Motorised roman blind", "price": 2400, "tag": "Per opening" },
+        { "id": "sh_curtain", "label": "Motorised curtain track", "price": 3200, "tag": "Per opening" }
+      ]
+    },
+    {
+      "key": "audio",
+      "title": "Audio",
+      "selectionType": "single",
+      "options": [
+        { "id": "au_none", "label": "None", "price": 0, "tag": "No audio" },
+        { "id": "au_inceiling", "label": "In ceiling speakers", "price": 2200, "tag": "Stereo" },
+        { "id": "au_premium", "label": "Premium in ceiling audio", "price": 4200, "tag": "Higher performance" },
+        { "id": "au_distributed", "label": "Distributed audio zone", "price": 5500, "tag": "Whole home ready" }
+      ]
+    },
+    {
+      "key": "tv",
+      "title": "TV",
+      "selectionType": "single",
+      "options": [
+        { "id": "tv_none", "label": "None", "price": 0, "tag": "No TV" },
+        { "id": "tv_wall", "label": "Wall mounted TV package", "price": 2500, "tag": "Mount and connect" },
+        { "id": "tv_mediawall", "label": "Media wall integration allowance", "price": 6000, "tag": "Allowance" },
+        { "id": "tv_hidden", "label": "Hidden TV or lift allowance", "price": 9500, "tag": "Allowance" }
+      ]
+    },
+    {
+      "key": "cinemaMedia",
+      "title": "Cinema & Media",
+      "selectionType": "single",
+      "options": [
+        { "id": "cm_none", "label": "None", "price": 0, "tag": "No cinema" },
+        { "id": "cm_media_room", "label": "Media room package", "price": 12000, "tag": "Sound and picture" },
+        { "id": "cm_cinema_entry", "label": "Dedicated cinema entry", "price": 25000, "tag": "Projection" },
+        { "id": "cm_cinema_premium", "label": "Dedicated cinema premium", "price": 45000, "tag": "Reference" }
+      ]
+    },
+    {
+      "key": "connectivity",
+      "title": "Connectivity",
+      "selectionType": "single",
+      "options": [
+        { "id": "co_none", "label": "Use existing", "price": 0, "tag": "No changes" },
+        { "id": "co_room", "label": "Room connectivity allowance", "price": 950, "tag": "Data and WiFi" },
+        { "id": "co_room_plus", "label": "Room connectivity plus", "price": 1750, "tag": "Higher spec" }
+      ]
+    }
+  ]
+}
